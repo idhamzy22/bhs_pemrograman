@@ -9,8 +9,8 @@ rectangle program{
     (menu) .> (choice 2) : extend
     (choice 2) .> (exit)
     (choice 1) .> (input Nama Depan) : include
-    (input Nama Depan) ._> (input nama tengah) : include
-    (input Nama Tengah) ._> (input nama belakang) : include
+    (input Nama Depan) ._> (input Nama Tengah) : include
+    (input Nama Tengah) ._> (input Nama Belakang) : include
     (input Nama Belakang) ._> (show full name) : include
 }
 
