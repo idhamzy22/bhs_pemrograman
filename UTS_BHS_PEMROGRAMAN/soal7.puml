@@ -1,0 +1,44 @@
+@startuml
+
+start
+
+:menu();
+:Pilih operasi (1-4, 0 untuk keluar): pilihan;
+
+if (pilihan == 0) then (Keluar dari program)
+else (Lanjutkan)
+
+    if (pilihan == 1) then (tambah)
+    else if (pilihan == 2) then (kurang)
+    else if (pilihan == 3) then (kali)
+    else if (pilihan == 4) then (bagi)
+    else (Pilihan tidak valid)
+
+    endif
+
+    :Masukkan angka pertama: a;
+    :Masukkan angka kedua: b;
+
+    if (bagi and b == 0) then (Pembagian dengan nol tidak diperbolehkan)
+    else (Hitung hasil)
+
+        if (tambah) then (Hasil dari %d + %d = %d)
+        else if (kurang) then (Hasil dari %d - %d = %d)
+        else if (kali) then (Hasil dari %d * %d = %d)
+        else if (bagi) then (Hasil dari %d / %d = %.2f)
+        endif
+
+    endif
+
+endif
+
+:Apakah Anda ingin melakukan operasi lain? (y/n): lanjut;
+
+if (lanjut == 'y' or lanjut == 'Y') then (Kembali ke menu)
+else (Selesai)
+
+endif
+
+stop
+
+@enduml
