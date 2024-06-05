@@ -1,0 +1,54 @@
+@startuml
+class RestaurantManagementSystem {
+  - menu: Menu
+  + viewMenu()
+  + addMenuItem(name: string, type: string, price: double)
+  + updateMenuItem(name: string, newPrice: double)
+  + deleteMenuItem(name: string)
+  + searchMenuItem(name: string)
+}
+
+class Menu {
+  - items: vector<MenuItem>
+  + addMenuItem(item: MenuItem)
+  + removeMenuItem(name: string)
+  + updateMenuItemPrice(name: string, newPrice: double)
+  + displayMenu()
+  + searchMenuItem(name: string)
+}
+
+class MenuItem {
+  - name: string
+  - type: string
+  - price: double
+  + MenuItem(name: string, type: string, price: double)
+}
+
+RestaurantManagementSystem --* Menu
+Menu --* MenuItem
+
+note "Main Program"
+  start
+  :displayMenuOptions();
+  :input choice;
+  loop until choice == 6
+    if choice == 1 then
+      :rms.viewMenu();
+    elseif choice == 2 then
+      :input name, type, price;
+      :rms.addMenuItem(name, type, price);
+    elseif choice == 3 then
+      :input name, price;
+      :rms.updateMenuItem(name, price);
+    elseif choice == 4 then
+      :input name;
+      :rms.deleteMenuItem(name);
+    elseif choice == 5 then
+      :input name;
+      :rms.searchMenuItem(name);
+    endif
+  end loop
+  :exit;
+end note
+
+@enduml
