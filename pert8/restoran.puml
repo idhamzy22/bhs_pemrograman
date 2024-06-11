@@ -1,54 +1,27 @@
 @startuml
-class RestaurantManagementSystem {
-  - menu: Menu
-  + viewMenu()
-  + addMenuItem(name: string, type: string, price: double)
-  + updateMenuItem(name: string, newPrice: double)
-  + deleteMenuItem(name: string)
-  + searchMenuItem(name: string)
-}
+actor Pengguna as U
+actor Website as W
+actor TamuUndangan as TU
 
-class Menu {
-  - items: vector<MenuItem>
-  + addMenuItem(item: MenuItem)
-  + removeMenuItem(name: string)
-  + updateMenuItemPrice(name: string, newPrice: double)
-  + displayMenu()
-  + searchMenuItem(name: string)
-}
+U -> W: Membuat Akun
+W -> U: Konfirmasi Akun
 
-class MenuItem {
-  - name: string
-  - type: string
-  - price: double
-  + MenuItem(name: string, type: string, price: double)
-}
+U -> W: Membuat Undangan
+W -> U: Template Undangan
+U -> W: Informasi Acara
+W -> U: Preview Undangan
 
-RestaurantManagementSystem --* Menu
-Menu --* MenuItem
+U -> W: Mengirim Undangan
+W -> TU: Kirim Undangan via Email/WhatsApp
+TU -> W: Konfirmasi Kehadiran
 
-note "Main Program"
-  start
-  :displayMenuOptions();
-  :input choice;
-  loop until choice == 6
-    if choice == 1 then
-      :rms.viewMenu();
-    elseif choice == 2 then
-      :input name, type, price;
-      :rms.addMenuItem(name, type, price);
-    elseif choice == 3 then
-      :input name, price;
-      :rms.updateMenuItem(name, price);
-    elseif choice == 4 then
-      :input name;
-      :rms.deleteMenuItem(name);
-    elseif choice == 5 then
-      :input name;
-      :rms.searchMenuItem(name);
-    endif
-  end loop
-  :exit;
-end note
+U -> W: Lihat Daftar Tamu
+W -> U: Daftar Tamu Undangan
 
+U -> W: Edit Undangan
+W -> U: Edit Informasi Acara
+U -> W: Simpan Perubahan
+
+U -> W: Hapus Undangan
+W -> U: Konfirmasi Hapus
 @enduml

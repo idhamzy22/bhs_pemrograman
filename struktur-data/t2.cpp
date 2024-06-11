@@ -1,201 +1,242 @@
 #include <iostream>
-
 using namespace std;
 
-// Node structure
-struct Node {
-    int data;
-    Node* next;
+struct DriverBus
+{
+    string nama;
+    string rute;
+    int poin;
+    DriverBus *next;
 };
 
-// Linked list class
-class LinkedList {
-private:
-    Node* head;
+DriverBus *head = NULL, *tail = NULL, *cur = NULL, *newNode = NULL, *del = NULL;
 
-public:
-    // Constructor
-    LinkedList() {
-        head = NULL;
+void sisipDepan(string nama, string rute, int poin)
+{
+    newNode = new DriverBus();
+    newNode->nama = nama;
+    newNode->rute = rute;
+    newNode->poin = poin;
+    newNode->next = head;
+    head = newNode;
+    if (tail == NULL)
+    {
+        tail = newNode;
     }
+}
 
-    // Destructor
-    ~LinkedList() {
-        Node* current = head;
-        Node* next;
-        while (current != NULL) {
-            next = current->next;
-            delete current;
-            current = next;
+void sisipTengah(string nama, string rute, int poin, int jam_keberangkatan)
+{
+    if (head == NULL)
+    {
+        cout << "List belum diisi" << endl;
+    }
+    else
+    {
+        newNode = new DriverBus();
+        newNode->nama = nama;
+        newNode->rute = rute;
+        newNode->poin = poin;
+
+        cur = head;
+        int nomor = 1;
+        while (nomor < jam_keberangkatan - 1 && cur->next != NULL)
+        {
+            cur = cur->next;
+            nomor++;
         }
-        head = NULL;
+        newNode->next = cur->next;
+        cur->next = newNode;
     }
+}
 
-    // Insert node at the beginning
-    void insertFront(int value) {
-        Node* newNode = new Node;
-        newNode->data = value;
-        newNode->next = head;
+void sisipBelakang(string nama, string rute, int poin)
+{
+    newNode = new DriverBus();
+    newNode->nama = nama;
+    newNode->rute = rute;
+    newNode->poin = poin;
+    newNode->next = NULL;
+    if (tail == NULL)
+    {
         head = newNode;
+        tail = newNode;
     }
+    else
+    {
+        tail->next = newNode;
+        tail = newNode;
+    }
+}
 
-    // Insert node in the middle after a given node
-    void insertMiddle(int value, int afterValue) {
-        Node* newNode = new Node;
-        newNode->data = value;
-        Node* current = head;
-        while (current != NULL && current->data != afterValue) {
-            current = current->next;
-        }
-        if (current != NULL) {
-            newNode->next = current->next;
-            current->next = newNode;
-        } else {
-            cout << "Node with value " << afterValue << " not found!" << endl;
+void hapusDepan()
+{
+    if (head == NULL)
+    {
+        cout << "List belum diisi" << endl;
+    }
+    else
+    {
+        del = head;
+        head = head->next;
+        delete del;
+        if (head == NULL)
+        {
+            tail = NULL;
         }
     }
+}
 
-    // Insert node at the end
-    void insertEnd(int value) {
-        Node* newNode = new Node;
-        newNode->data = value;
-        newNode->next = NULL;
-        if (head == NULL) {
-            head = newNode;
-        } else {
-            Node* current = head;
-            while (current->next != NULL) {
-                current = current->next;
+void hapusTengah(int jam_keberangkatan)
+{
+    if (head == NULL)
+    {
+        cout << "List belum diisi" << endl;
+    }
+    else
+    {
+        cur = head;
+        int nomor = 1;
+        while (nomor < jam_keberangkatan - 1 && cur->next != NULL)
+        {
+            cur = cur->next;
+            nomor++;
+        }
+        if (cur->next != NULL)
+        {
+            del = cur->next;
+            cur->next = del->next;
+            delete del;
+            if (cur->next == NULL)
+            {
+                tail = cur;
             }
-            current->next = newNode;
         }
     }
+}
 
-    // Delete node from the beginning
-    void deleteFront() {
-        if (head != NULL) {
-            Node* temp = head;
-            head = head->next;
-            delete temp;
-        } else {
-            cout << "List is empty!" << endl;
+void hapusBelakang()
+{
+    if (head == NULL)
+    {
+        cout << "List belum diisi" << endl;
+    }
+    else if (head->next == NULL)
+    {
+        del = head;
+        head = NULL;
+        tail = NULL;
+        delete del;
+    }
+    else
+    {
+        del = tail;
+        cur = head;
+        while (cur->next != tail)
+        {
+            cur = cur->next;
+        }
+        tail = cur;
+        tail->next = NULL;
+        delete del;
+    }
+}
+
+void tampilkanData()
+{
+    if (head == NULL)
+    {
+        cout << "List belum diisi" << endl;
+    }
+    else
+    {
+        cur = head;
+        cout << "Data Driver Bus:" << endl;
+        while (cur != NULL)
+        {
+            cout << "Nama: " << cur->nama << endl;
+            cout << "Rute: " << cur->rute << endl;
+            cout << "Poin: " << cur->poin << "\n" << endl;
+            cur = cur->next;
         }
     }
+}
 
-    // Delete node from the middle
-    void deleteMiddle(int value) {
-        if (head != NULL) {
-            Node* current = head;
-            Node* prev = NULL;
-            while (current != NULL && current->data != value) {
-                prev = current;
-                current = current->next;
-            }
-            if (current != NULL) {
-                prev->next = current->next;
-                delete current;
-            } else {
-                cout << "Node with value " << value << " not found!" << endl;
-            }
-        } else {
-            cout << "List is empty!" << endl;
-        }
-    }
+int main()
+{
+    int pilih;
+    string nama, rute;
+    int poin, jam_keberangkatan;
 
-    // Delete node from the end
-    void deleteEnd() {
-        if (head != NULL) {
-            if (head->next == NULL) {
-                delete head;
-                head = NULL;
-            } else {
-                Node* current = head;
-                Node* prev = NULL;
-                while (current->next != NULL) {
-                    prev = current;
-                    current = current->next;
-                }
-                prev->next = NULL;
-                delete current;
-            }
-        } else {
-            cout << "List is empty!" << endl;
-        }
-    }
-
-    // Display the linked list
-    void display() {
-        Node* current = head;
-        if (current == NULL) {
-            cout << "List is empty!" << endl;
-        } else {
-            while (current != NULL) {
-                cout << current->data << " ";
-                current = current->next;
-            }
-            cout << endl;
-        }
-    }
-};
-
-int main() {
-    LinkedList list;
-    char choice;
-    int value, afterValue;
-
-    do {
+    do
+    {
         cout << "Menu:" << endl;
-        cout << "a. Insert depan" << endl;
-        cout << "b. Insert tengah" << endl;
-        cout << "c. Insert belakang" << endl;
-        cout << "d. Delete depan" << endl;
-        cout << "e. Delete tengah" << endl;
-        cout << "f. Delete belakang" << endl;
+        cout << "a. Sisip depan" << endl;
+        cout << "b. Sisip tengah" << endl;
+        cout << "c. Sisip belakang" << endl;
+        cout << "d. Hapus depan" << endl;
+        cout << "e. Hapus tengah" << endl;
+        cout << "f. Hapus belakang" << endl;
         cout << "g. Tampilkan data" << endl;
         cout << "h. Keluar" << endl;
-        cout << "Pilih: ";
-        cin >> choice;
+        cout << "Pilih (a-h): ";
+        char pilihan;
+        cin >> pilihan;
 
-        switch (choice) {
-            case 'a':
-                cout << "Masukkan nilai: ";
-                cin >> value;
-                list.insertFront(value);
-                break;
-            case 'b':
-                cout << "Masukkan nilai: ";
-                cin >> value;
-                cout << "Setelah nilai: ";
-                cin >> afterValue;
-                list.insertMiddle(value, afterValue);
-                break;
-            case 'c':
-                cout << "Masukkan nilai: ";
-                cin >> value;
-                list.insertEnd(value);
-                break;
-            case 'd':
-                list.deleteFront();
-                break;
-            case 'e':
-                cout << "Masukkan nilai yang ingin dihapus: ";
-                cin >> value;
-                list.deleteMiddle(value);
-                break;
-            case 'f':
-                list.deleteEnd();
-                break;
-            case 'g':
-                cout << "Data linked list: ";
-                list.display();
-                break;
-            case 'h':
-                cout << "Keluar dari program." << endl;
-                break;
-            default:
-                cout << "Pilihan tidak valid!" << endl;
+        switch (pilihan)
+        {
+        case 'a':
+            cout << "Masukkan nama: ";
+            cin.ignore();
+            getline(cin, nama);
+            cout << "Masukkan rute: ";
+            getline(cin, rute);
+            cout << "Masukkan poin: ";
+            cin >> poin;
+            sisipDepan(nama, rute, poin);
+            break;
+        case 'b':
+            cout << "Masukkan nama: ";
+            cin.ignore();
+            getline(cin, nama);
+            cout << "Masukkan rute: ";
+            getline(cin, rute);
+            cout << "Masukkan poin: ";
+            cin >> poin;
+            cout << "Masukkan jam keberangkatan: ";
+            cin >> jam_keberangkatan;
+            sisipTengah(nama, rute, poin, jam_keberangkatan);
+            break;
+        case 'c':
+            cout << "Masukkan nama: ";
+            cin.ignore();
+            getline(cin, nama);
+            cout << "Masukkan rute: ";
+            getline(cin, rute);
+            cout << "Masukkan poin: ";
+            cin >> poin;
+            sisipBelakang(nama, rute, poin);
+            break;
+        case 'd':
+            hapusDepan();
+            break;
+        case 'e':
+            cout << "Masukkan jam keberangkatan: ";
+            cin >> jam_keberangkatan;
+            hapusTengah(jam_keberangkatan);
+            break;
+        case 'f':
+            hapusBelakang();
+            break;
+        case 'g':
+            tampilkanData();
+            break;
+        case 'h':
+            break;
+        default:
+            cout << "Pilihan tidak valid." << endl;
         }
-    } while (choice != 'h');
+    } while (pilih != 'h');
 
     return 0;
 }

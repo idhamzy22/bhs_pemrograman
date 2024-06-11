@@ -1,154 +1,201 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-class MenuItem {
+class TamuUndangan {
 public:
-    string name;
-    string type;
-    double price;
+    string email;
+    bool kehadiran;
 
-    MenuItem(string name, string type, double price) : name(name), type(type), price(price) {}
+    TamuUndangan(string email) : email(email), kehadiran(false) {}
+
+    void konfirmasiKehadiran() {
+        kehadiran = true;
+        cout << "Tamu dengan email " << email << " telah mengkonfirmasi kehadiran." << endl;
+    }
 };
 
-class Menu {
-private:
-    vector<MenuItem> items;
-
+class Website {
 public:
-    void addMenuItem(const MenuItem& item) {
-        items.push_back(item);
+    vector<TamuUndangan> tamuUndangan;
+    string undangan;
+
+    void konfirmasiAkun(string nama) {
+        cout << "Akun untuk " << nama << " telah dikonfirmasi." << endl;
     }
 
-    void removeMenuItem(const string& name) {
-        items.erase(remove_if(items.begin(), items.end(), [&](MenuItem& item) {
-            return item.name == name;
-        }), items.end());
+    void tampilkanTemplateUndangan() {
+        cout << "Template undangan tersedia." << endl;
     }
 
-    void updateMenuItemPrice(const string& name, double newPrice) {
-        for (auto& item : items) {
-            if (item.name == name) {
-                item.price = newPrice;
-                break;
+    void previewUndangan(string infoAcara) {
+        cout << "Preview undangan: " << infoAcara << endl;
+    }
+
+    void kirimUndangan() {
+        for (TamuUndangan& tamu : tamuUndangan) {
+            cout << "Undangan dikirim ke " << tamu.email << endl;
+        }
+    }
+
+    void tampilkanDaftarTamu() {
+        cout << "Daftar tamu undangan:" << endl;
+        for (TamuUndangan& tamu : tamuUndangan) {
+            cout << "- " << tamu.email;
+            if (tamu.kehadiran) {
+                cout << " (Hadir)";
             }
+            cout << endl;
         }
     }
 
-    void displayMenu() const {
-        cout << "Menu:" << endl;
-        for (const auto& item : items) {
-            cout << item.type << ": " << item.name << " - Rp. " << item.price << endl;
-        }
-    }
-
-    void searchMenuItem(const string& name) const {
-        bool found = false;
-        for (const auto& item : items) {
-            if (item.name.find(name) != string::npos) {
-                cout << item.type << ": " << item.name << " - Rp. " << item.price << endl;
-                found = true;
-            }
-        }
-        if (!found) {
-            cout << "Item '" << name << "' tidak ditemukan dalam menu." << endl;
-        }
+    void konfirmasiHapus() {
+        cout << "Undangan telah dihapus." << endl;
     }
 };
 
-class RestaurantManagementSystem {
-private:
-    Menu menu;
-
+class Pengguna {
 public:
-    void viewMenu() const {
-        menu.displayMenu();
+    string nama;
+    string email;
+    Website* website;
+
+    Pengguna(string nama, string email, Website* website) {
+        this->nama = nama;
+        this->email = email;
+        this->website = website;
     }
 
-    void addMenuItem(const string& name, const string& type, double price) {
-        MenuItem item(name, type, price);
-        menu.addMenuItem(item);
+    void buatAkun() {
+        cout << nama << " membuat akun." << endl;
+        website->konfirmasiAkun(nama);
     }
 
-    void updateMenuItem(const string& name, double newPrice) {
-        menu.updateMenuItemPrice(name, newPrice);
+    void buatUndangan(string judul, string isi) {
+        cout << nama << " membuat undangan." << endl;
+        website->tampilkanTemplateUndangan();
+        cout << "Informasi acara: " << isi << endl;
+        website->previewUndangan(isi);
+        website->undangan = isi;
     }
 
-    void deleteMenuItem(const string& name) {
-        menu.removeMenuItem(name);
+    void kirimUndangan(vector<string> emailTamu) {
+        for (string email : emailTamu) {
+            TamuUndangan tamu(email);
+            website->tamuUndangan.push_back(tamu);
+        }
+        website->kirimUndangan();
     }
 
-    void searchMenuItem(const string& name) const {
-        menu.searchMenuItem(name);
+    void lihatDaftarTamu() {
+        website->tampilkanDaftarTamu();
+    }
+
+    void editUndangan(string infoBaru) {
+        cout << nama << " mengedit undangan." << endl;
+        website->previewUndangan(infoBaru);
+        website->undangan = infoBaru;
+        cout << "Perubahan telah disimpan." << endl;
+    }
+
+    void hapusUndangan() {
+        website->undangan = "";
+        website->tamuUndangan.clear();
+        website->konfirmasiHapus();
+    }
+
+    void konfirmasiKehadiranTamu(string email) {
+        auto it = find_if(website->tamuUndangan.begin(), website->tamuUndangan.end(),
+                          [email](TamuUndangan& tamu) { return tamu.email == email; });
+        if (it != website->tamuUndangan.end()) {
+            it->konfirmasiKehadiran();
+        } else {
+            cout << "Tamu dengan email " << email << " tidak ditemukan." << endl;
+        }
     }
 };
-
-void displayMenuOptions() {
-    cout << "\nMenu Program Restoran:\n";
-    cout << "1. Tampilkan Menu\n";
-    cout << "2. Tambah Item Menu\n";
-    cout << "3. Perbarui Harga Item Menu\n";
-    cout << "4. Hapus Item Menu\n";
-    cout << "5. Cari Item Menu\n";
-    cout << "6. Keluar\n";
-    cout << "Pilih opsi (1-6): ";
-}
 
 int main() {
-    RestaurantManagementSystem rms;
-    int choice;
-    string name, type;
-    double price;
+    Website website;
+    Pengguna pengguna("John Doe", "johndoe@example.com", &website);
 
+    int choice;
     do {
-        displayMenuOptions();
+        cout << "\nMenu:\n";
+        cout << "1. Buat Akun\n";
+        cout << "2. Buat Undangan\n";
+        cout << "3. Kirim Undangan\n";
+        cout << "4. Lihat Daftar Tamu\n";
+        cout << "5. Edit Undangan\n";
+        cout << "6. Hapus Undangan\n";
+        cout << "7. Konfirmasi Kehadiran Tamu\n";
+        cout << "0. Keluar\n";
+        cout << "Pilih opsi: ";
         cin >> choice;
+        cin.ignore();
 
         switch (choice) {
-            case 1:
-                rms.viewMenu();
+            case 1: {
+                pengguna.buatAkun();
                 break;
-            case 2:
-                cout << "Masukkan nama item: ";
+            }
+            case 2: {
+                string judul, isi;
+                cout << "Masukkan judul undangan: ";
+                getline(cin, judul);
+                cout << "Masukkan isi undangan: ";
+                getline(cin, isi);
+                pengguna.buatUndangan(judul, isi);
+                break;
+            }
+            case 3: {
+                int n;
+                cout << "Masukkan jumlah tamu: ";
+                cin >> n;
                 cin.ignore();
-                getline(cin, name);
-                cout << "Masukkan jenis (Makanan/Minuman): ";
-                getline(cin, type);
-                cout << "Masukkan harga: ";
-                cin >> price;
-                rms.addMenuItem(name, type, price);
+                vector<string> emailTamu(n);
+                for (int i = 0; i < n; ++i) {
+                    cout << "Masukkan email tamu " << i + 1 << ": ";
+                    getline(cin, emailTamu[i]);
+                }
+                pengguna.kirimUndangan(emailTamu);
                 break;
-            case 3:
-                cout << "Masukkan nama item yang ingin diperbarui: ";
-                cin.ignore();
-                getline(cin, name);
-                cout << "Masukkan harga baru: ";
-                cin >> price;
-                rms.updateMenuItem(name, price);
+            }
+            case 4: {
+                pengguna.lihatDaftarTamu();
                 break;
-            case 4:
-                cout << "Masukkan nama item yang ingin dihapus: ";
-                cin.ignore();
-                getline(cin, name);
-                rms.deleteMenuItem(name);
+            }
+            case 5: {
+                string infoBaru;
+                cout << "Masukkan informasi undangan baru: ";
+                getline(cin, infoBaru);
+                pengguna.editUndangan(infoBaru);
                 break;
-            case 5:
-                cout << "Masukkan nama item yang ingin dicari: ";
-                cin.ignore();
-                getline(cin, name);
-                rms.searchMenuItem(name);
+            }
+            case 6: {
+                pengguna.hapusUndangan();
                 break;
-            case 6:
-                cout << "Keluar dari program. Terima kasih!\n";
+            }
+            case 7: {
+                string email;
+                cout << "Masukkan email tamu yang akan mengkonfirmasi kehadiran: ";
+                getline(cin, email);
+                pengguna.konfirmasiKehadiranTamu(email);
                 break;
-            default:
-                cout << "Pilihan tidak valid. Silakan coba lagi.\n";
+            }
+            case 0: {
+                cout << "Keluar dari program." << endl;
                 break;
+            }
+            default: {
+                cout << "Opsi tidak valid." << endl;
+                break;
+            }
         }
-    } while (choice != 6);
+    } while (choice != 0);
 
     return 0;
 }
