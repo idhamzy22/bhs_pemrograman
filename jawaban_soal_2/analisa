@@ -1,0 +1,2 @@
+Exception Handling:
+Exception handling adalah mekanisme untuk menangani error atau pengecualian yang terjadi saat program dijalankan. Python menyediakan beberapa kata kunci untuk menangani pengecualian, seperti `try`, `except`, `else`, dan `finally`. Blok `try` digunakan untuk membungkus kode yang mungkin menghasilkan pengecualian, blok `except` digunakan untuk menangani pengecualian, blok `else` dijalankan jika tidak ada pengecualian, dan blok `finally` dijalankan terlepas dari apakah pengecualian terjadi atau tidak.

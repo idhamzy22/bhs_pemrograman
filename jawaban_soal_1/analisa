@@ -1,0 +1,5 @@
+Function:
+Function adalah blok kode terorganisir dan dapat digunakan kembali yang digunakan untuk melakukan satu tindakan terkait. Fungsi menyediakan modularitas yang lebih baik untuk aplikasi Anda dan tingkat penggunaan kode yang tinggi. Python memberi kita banyak fungsi bawaan, seperti `print()`, tetapi kita juga bisa membuat fungsi kita sendiri. Fungsi didefinisikan menggunakan kata kunci `def`, diikuti dengan nama fungsi dan parameter opsional dalam tanda kurung.
+
+Recursive Function:
+Recursive function adalah fungsi yang memanggil dirinya sendiri dalam definisinya. Fungsi ini harus memiliki kondisi basis yang menentukan kapan harus berhenti memanggil dirinya sendiri, untuk menghindari loop tak terbatas. Rekursi digunakan untuk memecahkan masalah yang dapat dipecah menjadi sub-masalah yang lebih kecil dengan pola yang sama.
